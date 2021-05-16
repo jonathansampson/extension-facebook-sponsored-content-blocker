@@ -4,7 +4,7 @@ This is an **experimental** extension for Chromium-based browsers (e.g. Brave, G
 
 ## Installation
 
-1. Download `manifest.json` and `blocker.js`
+1. Download `manifest.json` and `blocker.js` (see [Releases](https://github.com/jonathansampson/extension-facebook-sponsored-content-blocker/releases))
 2. Visit _about:extensions_ via the address bar
 3. Enable _Developer Mode_
 4. Select _Load unpacked_
