@@ -19,14 +19,17 @@ function hasSponsoredText(element) {
 
     /**
      * Facebook's 'Sponsored' text consists of visble and invisible span elements.
-     * We filter-out the invisible ones, and determine the text remaining in the rest.
+     * Due to a facebook bug, visible span elements have a class-value ending in a
+     * blank space. We can use this to look up those elements.
      */
 
-    for (const node of element.childNodes) {
-        if (node instanceof Element && node.hasAttribute("style") === false) {
-            message = message + node.textContent;
-        } else if (node instanceof Text) {
-            message = message + node.nodeValue;
+    for (const node of element.element.querySelectorAll("span[class]")) {
+        if (node.matches("span[class$=' ']")) {
+            if (node instanceof Element) {
+                message = message + node.textContent[0];
+            } else if (node instanceof Text) {
+                message = message + node.nodeValue;
+            }
         }
     }
 
@@ -43,23 +46,24 @@ function removeSponsored(node) {
     const start = performance.now();
 
     /**
-     * The elements we'd like to target have some variability in how
-     * their style values appear. We use a basic 'starts-with' selector.
+     * Facebook's code is a little buggy, in that it leaves a trailing
+     * space at the end of span elements belonging to the 'Sponsored' string.
+     * We can use this bug to locate sponsored elements.
      */
 
-    const elementList = node.querySelectorAll("span[style^='position']");
+    const elementList = node.querySelectorAll("a[href='#'][role='link']");
 
     if (elementList.length > 0) {
 
         for (const element of elementList) {
 
             /**
-             * Handing it off to hasSponsoredText to see if the element's siblings
-             * form the target text. Important to pass the parentElement here as the
-             * childNodes are queried and reviewed.
+             * Handing it off to hasSponsoredText to see if the element's child nodes
+             * form the target text. We pass the parent <a> to determine if it contains
+             * the 'Sponsored' text.
              */
 
-            if (hasSponsoredText(element.parentElement)) {
+            if (hasSponsoredText(element)) {
 
                 /**
                  * Sponsored content in the main feed is nested within a [role='article']
