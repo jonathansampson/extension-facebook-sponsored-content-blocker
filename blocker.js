@@ -23,7 +23,7 @@ function hasSponsoredText(element) {
      * blank space. We can use this to look up those elements.
      */
 
-    for (const node of element.element.querySelectorAll("span[class]")) {
+    for (const node of element.querySelectorAll("span[class]")) {
         if (node.matches("span[class$=' ']")) {
             if (node instanceof Element) {
                 message = message + node.textContent[0];
